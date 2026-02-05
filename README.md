@@ -89,7 +89,8 @@ The initial reconnaissance scan identified **23 open TCP ports** with multiple c
 ### Evidence
 *Nmap scan results showing extensive attack surface with vulnerable services*
 
-![Nmap Scan Results - Coming Soon]
+![Nmap Scan Results](scans/kali_nmap_scans.png)
+*Nmap service detection scan revealing 23 open ports with vulnerable services across multiple protocols*
 
 ### Impact Assessment
 In a production environment, these findings would represent:

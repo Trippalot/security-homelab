@@ -43,100 +43,166 @@ Security professional with CISSP and GICSP certifications, currently working as 
 - ✅ Virtual network design and isolation
 - ✅ Linux command-line administration
 - ✅ Network reconnaissance and enumeration
-- ✅ Vulnerability identification and assessment
-- ✅ Service version detection
-- ✅ Security tool proficiency (Nmap)
-- ✅ Technical documentation and reporting
+- ✅ Vulnerability exploitation with Metasploit Framework
+- ✅ Post-exploitation system enumeration
+- ✅ Service version detection and CVE correlation
+- ✅ Security tool proficiency (Nmap, Metasploit)
+- ✅ Technical documentation and professional reporting
 
-## 🔍 Phase 1: Network Reconnaissance
+## 🔍 Lab Phases
 
-### Objective
-Map the attack surface of Metasploitable 2 through systematic network reconnaissance and service enumeration.
+### ✅ Phase 1: Network Reconnaissance (Completed)
 
-### Methodology
-1. **Connectivity Verification:** Verified network reachability using ICMP ping
-2. **Port Scanning:** Performed comprehensive TCP port scan
-3. **Service Detection:** Identified running services and version numbers
-4. **Vulnerability Correlation:** Mapped detected versions to known CVEs
+**Objective:** Map the attack surface of Metasploitable 2 through systematic network reconnaissance and service enumeration.
 
-### Tools Used
-- **Nmap** - Network mapper for port scanning and service detection
-- **Command:** `nmap -sV -sC 192.168.100.10`
-  - `-sV`: Service/version detection
-  - `-sC`: Default script scan for common vulnerabilities
+**Key Activities:**
+- Verified network connectivity using ICMP ping
+- Performed comprehensive port scan with Nmap
+- Identified 23 open TCP ports with vulnerable services
+- Correlated service versions to known CVEs
 
-### Key Findings
+**Tools Used:** Nmap, ICMP
 
-The initial reconnaissance scan identified **23 open TCP ports** with multiple critical vulnerabilities:
+**Key Findings:**
+- vsftpd 2.3.4 (CVE-2011-2523 - Backdoor)
+- Unencrypted Telnet (Port 23)
+- Apache 2.2.8 with known vulnerabilities
+- Exposed MySQL database (Port 3306)
+- Vulnerable Samba services (Ports 139/445)
 
-#### Critical Vulnerabilities Discovered
+**Documentation:** [Phase 1 Details in README](https://github.com/Trippalot/security-homelab)
 
-| Port | Service | Version | Vulnerability | Severity |
-|------|---------|---------|---------------|----------|
-| 21 | FTP | vsftpd 2.3.4 | Backdoor (CVE-2011-2523) | 🔴 CRITICAL |
-| 23 | Telnet | Linux telnetd | Unencrypted authentication | 🔴 CRITICAL |
-| 80 | HTTP | Apache 2.2.8 | Multiple known exploits | 🟠 HIGH |
-| 139/445 | SMB | Samba 3.x | Remote code execution | 🔴 CRITICAL |
-| 3306 | MySQL | 5.0.51a | Exposed database service | 🟠 HIGH |
-| 22 | SSH | OpenSSH 4.7p1 | Outdated version (2007) | 🟡 MEDIUM |
+---
 
-#### Notable Security Issues
-- **Anonymous FTP access enabled** - Allows unauthenticated file access
-- **Unencrypted Telnet** - Credentials transmitted in cleartext
-- **Exposed database** - MySQL accessible over network
-- **Outdated software stack** - All services running vulnerable versions from 2007-2008
+### ✅ Phase 2: Exploitation (Completed)
 
-### Evidence
-*Nmap scan results showing extensive attack surface with vulnerable services*
+**Objective:** Exploit identified vulnerabilities to gain unauthorized access and demonstrate attack methodology.
 
-![Nmap Scan Results](scans/kali_nmap_scans.png)
-*Nmap service detection scan revealing 23 open ports with vulnerable services across multiple protocols*
+**Attack Summary:**
+Successfully exploited the vsftpd 2.3.4 backdoor vulnerability (CVE-2011-2523) to gain root-level command execution on the target system.
 
-### Impact Assessment
-In a production environment, these findings would represent:
-- **Immediate remote code execution risk** (vsftpd backdoor, Samba vulnerabilities)
-- **Data breach potential** (exposed MySQL database)
-- **Credential theft risk** (unencrypted Telnet)
-- **Extensive attack surface** requiring immediate remediation
+**Exploitation Details:**
+- **Target:** Metasploitable 2 (192.168.100.10)
+- **Vulnerability:** vsftpd 2.3.4 backdoor (CVE-2011-2523)
+- **Tool:** Metasploit Framework v6
+- **Module:** `exploit/unix/ftp/vsftpd_234_backdoor`
+- **Result:** Root shell access (UID 0)
+
+**Attack Chain:**
+1. **Reconnaissance:** Identified vsftpd 2.3.4 on port 21 (Phase 1)
+2. **Weaponization:** Selected Metasploit exploit module
+3. **Delivery:** Connected to FTP service, sent backdoor trigger (`:)`)
+4. **Exploitation:** Backdoor activated, spawned root shell on port 6200
+5. **Post-Exploitation:** Verified root access, enumerated system, accessed /etc/shadow
+
+**Impact:** Complete system compromise with root privileges
+
+**Evidence:**
+![Root Access Proof](evidence/phase2-root-access.png)
+
+**Full Writeup:** [Phase 2 - Exploitation: vsftpd Backdoor](writeups/phase2-exploitation-vsftpd.md)
+
+---
+
+### 🔄 Phase 3: Post-Exploitation (Planned)
+
+**Objectives:**
+- Privilege escalation techniques
+- Lateral movement concepts
+- Data exfiltration methods
+- Persistence mechanisms
+
+---
+
+### 🔄 Phase 4: Detection & Defense (Planned)
+
+**Objectives:**
+- Deploy SIEM (Security Onion or ELK Stack)
+- Detect Phase 2 attack in real-time
+- Write custom detection rules
+- Implement system hardening controls
+- Document blue team response procedures
+
+---
 
 ## 📈 Lab Progress
 
 - [x] Lab infrastructure configured
 - [x] Network segmentation implemented  
-- [x] Initial reconnaissance completed
+- [x] Initial reconnaissance completed (Phase 1)
 - [x] Vulnerability surface mapped
-- [ ] Exploitation phase (next)
-- [ ] Post-exploitation analysis
+- [x] Exploitation demonstrated (Phase 2)
+- [x] Root access gained via CVE-2011-2523
+- [x] Attack methodology documented
+- [ ] Post-exploitation analysis (Phase 3)
 - [ ] Defensive hardening exercises
-- [ ] SIEM/logging implementation
+- [ ] SIEM/logging implementation (Phase 4)
+- [ ] Detection rule development
 
 ## 🎓 Learning Outcomes
 
 This lab demonstrates practical understanding of:
-- **Offensive Security:** Reconnaissance methodologies and attack surface analysis
+- **Offensive Security:** Attack methodologies from reconnaissance to exploitation
 - **Network Security:** Proper network segmentation and isolation techniques
-- **Vulnerability Management:** Systematic identification and risk assessment
-- **Security Operations:** Tool proficiency and professional documentation
+- **Vulnerability Management:** Systematic identification, exploitation, and remediation
+- **Security Engineering:** End-to-end attack simulation and defense planning
+- **Tool Proficiency:** Nmap, Metasploit Framework, Linux CLI
+- **Professional Documentation:** Industry-standard penetration testing reporting
 
-## 📝 Documentation Standards
+## 📝 Methodology
 
-All exercises follow industry-standard penetration testing methodology:
-1. Planning & Reconnaissance
-2. Scanning & Enumeration  
-3. Exploitation
-4. Post-Exploitation
-5. Reporting
+All exercises follow the Cyber Kill Chain and industry-standard penetration testing methodology:
+
+1. **Reconnaissance** - Information gathering and target identification
+2. **Scanning & Enumeration** - Service discovery and vulnerability mapping
+3. **Exploitation** - Gaining unauthorized access
+4. **Post-Exploitation** - System enumeration and privilege escalation
+5. **Reporting** - Professional documentation with remediation guidance
 
 Each phase is documented with:
-- Clear objectives
-- Methodology and tools used
-- Evidence (screenshots, scan outputs)
-- Findings and risk assessment
+- Clear objectives and scope
+- Detailed methodology and commands
+- Visual evidence (screenshots, diagrams)
+- Findings with risk assessment
 - Remediation recommendations
+- Lessons learned
+
+## 🔧 Resources
+
+### Reference Documentation
+- [Metasploit Framework Cheat Sheet](resources/metasploit-cheatsheet.md) - Quick reference for common Metasploit commands and workflows
+
+### Lab Files
+- **Writeups:** Detailed attack documentation for each phase
+- **Evidence:** Screenshots and proof of successful exploitation
+- **Resources:** Reference guides and cheat sheets
+
+## 🔐 Security & Ethics
+
+**This laboratory environment is maintained for educational purposes and professional skill development.**
+
+- All activities conducted in isolated, controlled environment
+- No connection to production systems or networks
+- No unauthorized access to external systems
+- Follows responsible disclosure and ethical hacking principles
+
+**Target System:**
+- Metasploitable 2 - Intentionally vulnerable training platform
+- Designed for penetration testing practice
+- No real data or services at risk
 
 ---
 
-*This laboratory environment is maintained for educational purposes and professional skill development. All activities are conducted in an isolated, controlled environment with no connection to production systems.*
+## 📚 References
 
-**Last Updated:** February 2026
-```
+- **Metasploit Framework:** https://www.metasploit.com/
+- **Offensive Security:** https://www.offensive-security.com/
+- **NIST Cybersecurity Framework:** https://www.nist.gov/cyberframework
+- **MITRE ATT&CK:** https://attack.mitre.org/
+- **CVE Details:** https://www.cvedetails.com/
+
+---
+
+**Last Updated:** February 6, 2026
+
+**Current Phase:** Post-Exploitation (Phase 3 - Planning)

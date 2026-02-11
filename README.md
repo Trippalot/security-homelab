@@ -1,16 +1,16 @@
 # Security Engineering Home Lab
 
 ## 🎯 Objective
-Develop hands-on penetration testing and security engineering skills through practical cybersecurity exercises in a controlled lab environment.
+Develop hands-on penetration testing and security engineering skills through practical cybersecurity exercises in a controlled lab environment, demonstrating both offensive and defensive security capabilities.
 
 ## 👨‍💼 About Me
-Security professional with CISSP and GICSP certifications, currently working as SCA-V/ISSO, building practical security engineering skills through hands-on lab exercises.
+Security professional with CISSP and GICSP certifications, currently working as SCA-V/ISSO, building practical security engineering skills through hands-on lab exercises. Transitioning from security assessment to hands-on security operations and engineering roles.
 
 ## 🏗️ Lab Architecture
 
 ### Infrastructure
 - **Hypervisor:** VMware Workstation Pro
-- **Host System:** Windows 11 (Lenovo Yoga 730-15IKB)
+- **Host System:** Windows 11 (Lenovo Yoga 730-15IKB, 8GB RAM, i5-8250U)
 - **Network Segmentation:** Isolated virtual network (192.168.100.0/24)
 
 ### Virtual Machines
@@ -44,10 +44,12 @@ Security professional with CISSP and GICSP certifications, currently working as 
 - ✅ Linux command-line administration
 - ✅ Network reconnaissance and enumeration
 - ✅ Vulnerability exploitation with Metasploit Framework
+- ✅ Multiple attack vector exploitation (backdoors, command injection)
 - ✅ Post-exploitation system enumeration
+- ✅ Exploit troubleshooting and pivoting
 - ✅ Service version detection and CVE correlation
 - ✅ Security tool proficiency (Nmap, Metasploit)
-- ✅ Technical documentation and professional reporting
+- ✅ Professional technical documentation and reporting
 
 ## 🔍 Lab Phases
 
@@ -65,18 +67,21 @@ Security professional with CISSP and GICSP certifications, currently working as 
 
 **Key Findings:**
 - vsftpd 2.3.4 (CVE-2011-2523 - Backdoor)
+- UnrealIRCD 3.2.8.1 (CVE-2010-2075 - Backdoor)
+- Samba 3.0.x (CVE-2007-2447 - Command Injection)
 - Unencrypted Telnet (Port 23)
 - Apache 2.2.8 with known vulnerabilities
 - Exposed MySQL database (Port 3306)
 - Vulnerable Samba services (Ports 139/445)
 
-**Documentation:** [Phase 1 Details in README](https://github.com/Trippalot/security-homelab)
+**Evidence:**
+![Nmap Scan Results](scans/nmap-initial-scan.png)
 
 ---
 
-### ✅ Phase 2: Exploitation (Completed)
+### ✅ Phase 2: Exploitation - Backdoor Attack (Completed)
 
-**Objective:** Exploit identified vulnerabilities to gain unauthorized access and demonstrate attack methodology.
+**Objective:** Exploit vsftpd backdoor to gain root access and demonstrate backdoor-based attack methodology.
 
 **Attack Summary:**
 Successfully exploited the vsftpd 2.3.4 backdoor vulnerability (CVE-2011-2523) to gain root-level command execution on the target system.
@@ -98,56 +103,127 @@ Successfully exploited the vsftpd 2.3.4 backdoor vulnerability (CVE-2011-2523) t
 **Impact:** Complete system compromise with root privileges
 
 **Evidence:**
-![Root Access Proof](evidence/phase2-root-access.png)
+![Root Access via vsftpd](evidence/phase2-root-access.png)
 
 **Full Writeup:** [Phase 2 - Exploitation: vsftpd Backdoor](writeups/phase2-exploitation-vsftpd.md)
 
 ---
 
-### 🔄 Phase 3: Post-Exploitation (Planned)
+### ✅ Phase 3: Multiple Exploitation Attempts - Adaptability (Completed)
 
-**Objectives:**
-- Privilege escalation techniques
-- Lateral movement concepts
-- Data exfiltration methods
-- Persistence mechanisms
+**Objective:** Demonstrate real-world penetration testing adaptability by attempting multiple attack vectors and pivoting when needed.
+
+**Attack Attempts:**
+
+**Attempt #1: UnrealIRCD Backdoor (Unsuccessful)**
+- **Target:** UnrealIRCD 3.2.8.1 on port 6667
+- **Vulnerability:** CVE-2010-2075 - Backdoor Command Execution
+- **Payloads Tested:** 
+  - `cmd/unix/reverse` - Handler binding issues
+  - `cmd/unix/bind_netcat` - Connection failed
+  - `cmd/unix/generic` - Session not created
+- **Result:** Exploitation unsuccessful in current lab configuration
+- **Decision:** Pivoted to alternative attack vector
+
+**Attempt #2: Samba Command Injection (Successful)**
+- **Target:** Samba 3.0.x on ports 139/445
+- **Vulnerability:** CVE-2007-2447 - Username Map Script Command Injection
+- **Tool:** Metasploit Framework v6
+- **Module:** `exploit/multi/samba/usermap_script`
+- **Result:** Root shell access (UID 0)
+
+**Attack Chain:**
+1. **Initial Attempt:** UnrealIRCD exploitation with multiple payload attempts
+2. **Troubleshooting:** Systematic testing of different payloads and configurations
+3. **Pivot Decision:** Moved to Samba after exhausting reasonable troubleshooting
+4. **Successful Exploitation:** Command injection via malicious username
+5. **Post-Exploitation:** Root access, system enumeration, proof of compromise
+
+**Key Learning:** Professional penetration testing includes failed attempts, troubleshooting methodology, and strategic pivoting to alternative attack vectors.
+
+**Evidence:**
+![Root Access via Samba](evidence/phase3-samba-root-access.png)
+
+**Full Writeup:** [Phase 3 - Multiple Exploits & Adaptability](writeups/phase3-multiple-exploits.md)
+
+**Vulnerability Types Demonstrated:**
+- **Backdoor Exploitation** (vsftpd - Phase 2)
+- **Command Injection** (Samba - Phase 3)
 
 ---
 
-### 🔄 Phase 4: Detection & Defense (Planned)
+### 🔄 Phase 4: Detection & Defense (In Progress)
 
 **Objectives:**
-- Deploy SIEM (Security Onion or ELK Stack)
-- Detect Phase 2 attack in real-time
-- Write custom detection rules
+- Deploy SIEM platform (Security Onion or ELK Stack)
+- Replay Phase 2 and Phase 3 attacks while monitoring
+- Detect attacks in real-time through SIEM
+- Write custom detection rules (Suricata/Snort)
+- Analyze attack indicators and patterns
 - Implement system hardening controls
 - Document blue team response procedures
+
+**Why This Matters:**
+- Demonstrates understanding of BOTH offense and defense
+- SIEM experience is critical for security engineer roles
+- Shows ability to think like both attacker and defender
+- Completes the security engineering skillset
 
 ---
 
 ## 📈 Lab Progress
 
+**Infrastructure & Reconnaissance:**
 - [x] Lab infrastructure configured
 - [x] Network segmentation implemented  
 - [x] Initial reconnaissance completed (Phase 1)
-- [x] Vulnerability surface mapped
-- [x] Exploitation demonstrated (Phase 2)
-- [x] Root access gained via CVE-2011-2523
-- [x] Attack methodology documented
-- [ ] Post-exploitation analysis (Phase 3)
-- [ ] Defensive hardening exercises
-- [ ] SIEM/logging implementation (Phase 4)
+- [x] Vulnerability surface mapped (23 services identified)
+
+**Offensive Security (Red Team):**
+- [x] Backdoor exploitation demonstrated (vsftpd - Phase 2)
+- [x] Command injection exploitation demonstrated (Samba - Phase 3)
+- [x] Root access gained via multiple attack vectors
+- [x] Post-exploitation enumeration
+- [x] Exploit troubleshooting and pivoting methodology
+- [x] Professional attack documentation
+
+**Defensive Security (Blue Team) - Phase 4:**
+- [ ] SIEM/logging platform deployment
+- [ ] Attack detection in real-time
 - [ ] Detection rule development
+- [ ] System hardening implementation
+- [ ] Blue team response procedures
 
 ## 🎓 Learning Outcomes
 
 This lab demonstrates practical understanding of:
-- **Offensive Security:** Attack methodologies from reconnaissance to exploitation
-- **Network Security:** Proper network segmentation and isolation techniques
-- **Vulnerability Management:** Systematic identification, exploitation, and remediation
-- **Security Engineering:** End-to-end attack simulation and defense planning
-- **Tool Proficiency:** Nmap, Metasploit Framework, Linux CLI
-- **Professional Documentation:** Industry-standard penetration testing reporting
+
+**Offensive Security:**
+- Attack methodologies from reconnaissance to post-exploitation
+- Multiple vulnerability classes (backdoors, injection flaws)
+- Systematic exploitation with Metasploit Framework
+- Professional troubleshooting and pivoting strategies
+
+**Network Security:**
+- Proper network segmentation and isolation techniques
+- TCP/IP protocol understanding
+- Service enumeration and fingerprinting
+
+**Vulnerability Management:**
+- Systematic identification and correlation to CVEs
+- Exploitation and impact assessment
+- Remediation planning
+
+**Security Engineering:**
+- End-to-end attack simulation
+- Tool proficiency (Nmap, Metasploit, Linux CLI)
+- Defense planning and detection strategy development
+
+**Professional Skills:**
+- Comprehensive technical documentation
+- Honest reporting (including failed attempts)
+- Adaptability and resilience in troubleshooting
+- Industry-standard penetration testing methodology
 
 ## 📝 Methodology
 
@@ -155,16 +231,19 @@ All exercises follow the Cyber Kill Chain and industry-standard penetration test
 
 1. **Reconnaissance** - Information gathering and target identification
 2. **Scanning & Enumeration** - Service discovery and vulnerability mapping
-3. **Exploitation** - Gaining unauthorized access
-4. **Post-Exploitation** - System enumeration and privilege escalation
-5. **Reporting** - Professional documentation with remediation guidance
+3. **Exploitation** - Gaining unauthorized access through various attack vectors
+4. **Post-Exploitation** - System enumeration, privilege verification, proof of compromise
+5. **Detection** (Phase 4) - Identifying attack indicators and patterns
+6. **Defense** (Phase 4) - Hardening and remediation
+7. **Reporting** - Professional documentation with remediation guidance
 
 Each phase is documented with:
 - Clear objectives and scope
-- Detailed methodology and commands
+- Detailed methodology and commands with explanations
 - Visual evidence (screenshots, diagrams)
-- Findings with risk assessment
+- Findings with risk assessment and impact analysis
 - Remediation recommendations
+- Detection strategies
 - Lessons learned
 
 ## 🔧 Resources
@@ -172,37 +251,95 @@ Each phase is documented with:
 ### Reference Documentation
 - [Metasploit Framework Cheat Sheet](resources/metasploit-cheatsheet.md) - Quick reference for common Metasploit commands and workflows
 
-### Lab Files
-- **Writeups:** Detailed attack documentation for each phase
-- **Evidence:** Screenshots and proof of successful exploitation
-- **Resources:** Reference guides and cheat sheets
+### Lab Files Structure
+```
+security-homelab/
+├── README.md
+├── writeups/
+│   ├── phase2-exploitation-vsftpd.md
+│   └── phase3-multiple-exploits.md
+├── evidence/
+│   ├── phase2-root-access.png
+│   └── phase3-samba-root-access.png
+├── resources/
+│   └── metasploit-cheatsheet.md
+└── scans/
+    └── nmap-initial-scan.png
+```
 
 ## 🔐 Security & Ethics
 
 **This laboratory environment is maintained for educational purposes and professional skill development.**
 
+**Ethical Guidelines:**
 - All activities conducted in isolated, controlled environment
 - No connection to production systems or networks
 - No unauthorized access to external systems
 - Follows responsible disclosure and ethical hacking principles
+- Complies with applicable laws and regulations
 
 **Target System:**
 - Metasploitable 2 - Intentionally vulnerable training platform
-- Designed for penetration testing practice
+- Designed specifically for penetration testing practice
 - No real data or services at risk
+- Publicly available and documented as training tool
+
+**Purpose:**
+- Develop hands-on security engineering skills
+- Understand both offensive and defensive security
+- Prepare for security operations and engineering roles
+- Build professional portfolio demonstrating practical capabilities
+
+---
+
+## 💼 Professional Application
+
+**This lab demonstrates skills directly applicable to:**
+
+**Security Engineer Roles:**
+- Vulnerability assessment and penetration testing
+- Security tool operation (SIEM, IDS/IPS, scanners)
+- Incident detection and response
+- System hardening and remediation
+- Security architecture and design
+
+**OT/ICS Security Roles:**
+- Understanding of attack vectors targeting industrial systems
+- Network segmentation strategies for OT environments
+- Detection of anomalous activity in SCADA/ICS networks
+- Risk assessment for operational technology
+
+**Security Operations Center (SOC):**
+- SIEM operation and log analysis
+- Alert investigation and triage
+- Threat hunting and detection rule development
+- Incident response procedures
 
 ---
 
 ## 📚 References
 
+**Tools & Frameworks:**
 - **Metasploit Framework:** https://www.metasploit.com/
-- **Offensive Security:** https://www.offensive-security.com/
+- **Nmap:** https://nmap.org/
+- **Kali Linux:** https://www.kali.org/
+- **Metasploitable:** https://sourceforge.net/projects/metasploitable/
+
+**Standards & Methodologies:**
 - **NIST Cybersecurity Framework:** https://www.nist.gov/cyberframework
 - **MITRE ATT&CK:** https://attack.mitre.org/
+- **OWASP Top 10:** https://owasp.org/www-project-top-ten/
+- **Penetration Testing Execution Standard:** http://www.pentest-standard.org/
+
+**Vulnerability Databases:**
 - **CVE Details:** https://www.cvedetails.com/
+- **Exploit Database:** https://www.exploit-db.com/
+- **Rapid7 Vulnerability Database:** https://www.rapid7.com/db/
 
 ---
 
-**Last Updated:** February 6, 2026
+**Last Updated:** February 10, 2026
 
-**Current Phase:** Post-Exploitation (Phase 3 - Planning)
+**Current Phase:** Detection & Defense (Phase 4 - Starting)
+
+**Portfolio Status:** Ready for professional review with 3 completed phases demonstrating reconnaissance, multiple exploitation techniques, and professional documentation
